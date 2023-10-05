@@ -1,10 +1,12 @@
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
+  @IsString()
   readonly name: string;
 
   @IsNotEmpty()
+  @IsString()
   readonly category: string;
 
   @IsNumber()
