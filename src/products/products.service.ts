@@ -14,4 +14,8 @@ export class ProductsService {
     const newProduct = this.productRepository.create(product);
     return this.productRepository.save(newProduct);
   }
+
+  getProducts() {
+    return this.productRepository.find();
+  }
 }
