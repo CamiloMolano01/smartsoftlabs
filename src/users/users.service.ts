@@ -34,4 +34,31 @@ export class UsersService {
       },
     });
   }
+
+  async getUserWithId(id: number) {
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async getPurchases(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    return user.purchases;
+  }
+
+  async getProfile(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      select: { id: true, name: true, username: true, money: true },
+    });
+    return user;
+  }
 }
