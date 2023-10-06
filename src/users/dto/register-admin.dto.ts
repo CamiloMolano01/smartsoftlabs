@@ -5,6 +5,7 @@ import {
   Length,
   IsStrongPassword,
 } from 'class-validator';
+import { Role } from 'src/auth/enums/role.enum';
 
 export class RegisterAdminDto {
   @IsNotEmpty()
@@ -26,5 +27,5 @@ export class RegisterAdminDto {
   @IsString()
   readonly name: string;
 
-  readonly role?: string;
+  readonly role?: Role;
 }

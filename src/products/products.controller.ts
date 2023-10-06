@@ -16,6 +16,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('products')
@@ -23,6 +24,7 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Post()
+  @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   createProduct(@Body() body: CreateProductDto) {
     return this.productsService.createProduct(body);
@@ -41,11 +43,15 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
