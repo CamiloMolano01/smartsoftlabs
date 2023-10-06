@@ -1,3 +1,4 @@
+import { Role } from 'src/auth/enums/role.enum';
 import { Purchase } from 'src/purchases/purchase.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -18,8 +19,8 @@ export class User {
   @Column('numeric', { precision: 10, scale: 2, default: 0 })
   money: number;
 
-  @Column({ default: 'user' })
-  role: string;
+  @Column({ default: Role.User })
+  role: Role;
 
   @OneToMany(() => Purchase, (purchase) => purchase.user)
   purchases: Purchase[];
