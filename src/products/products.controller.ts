@@ -7,13 +7,17 @@ import {
   ParseIntPipe,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
@@ -24,11 +28,13 @@ export class ProductsController {
     return this.productsService.createProduct(body);
   }
 
+  @Public()
   @Get()
   getProducts() {
     return this.productsService.getProducts();
   }
 
+  @Public()
   @Get(':id')
   getProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.getProduct(id);
