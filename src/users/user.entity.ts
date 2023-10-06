@@ -18,6 +18,9 @@ export class User {
   @Column('numeric', { precision: 10, scale: 2, default: 0 })
   money: number;
 
+  @Column({ default: 'user' })
+  role: string;
+
   @OneToMany(() => Purchase, (purchase) => purchase.user)
   purchases: Purchase[];
 }

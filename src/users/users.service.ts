@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
+import { RegisterAdminDto } from './dto/register-admin.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,11 +12,15 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async registerUser(user: RegisterUserDto) {
+  async registerUser(
+    user: RegisterUserDto | RegisterAdminDto,
+    isAdmin?: boolean,
+  ) {
     const userFound = await this.getUser(user.username);
     if (userFound) throw new ConflictException('Username is already in use');
     user.password = await bcrypt.hash(user.password, 10);
     const newUser = this.userRepository.create(user);
+    if (isAdmin) newUser.role = 'admin';
     const result = await this.userRepository.save(newUser);
     delete result.password;
     return result;
