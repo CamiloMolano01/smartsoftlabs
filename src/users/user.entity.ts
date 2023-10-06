@@ -6,10 +6,16 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ length: 30, unique: true })
+  username: string;
+
+  @Column()
+  password: string;
+
   @Column({ length: 100 })
   name: string;
 
-  @Column('numeric', { precision: 10, scale: 2 })
+  @Column('numeric', { precision: 10, scale: 2, default: 0 })
   money: number;
 
   @OneToMany(() => Purchase, (purchase) => purchase.user)
