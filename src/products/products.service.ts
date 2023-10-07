@@ -36,6 +36,10 @@ export class ProductsService {
     return updatedProduct;
   }
 
+  async saveProduct(product: Product) {
+    return this.productRepository.save(product);
+  }
+
   async validateProductId(id: number) {
     const product = await this.productRepository.findOne({
       where: {

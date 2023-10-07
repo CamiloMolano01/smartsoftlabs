@@ -8,12 +8,12 @@ import {
   Request,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PurchasesService } from './purchases.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from 'src/auth/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { PurchaseListDto } from './dto/purchase-product.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('purchases')
@@ -22,8 +22,8 @@ export class PurchasesController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles(Role.User)
-  createPurchase(@Request() req, @Body() body: CreatePurchaseDto) {
-    return this.purchasesService.createPurchase(body, req.user.userId);
+  createPurchase(@Request() req, @Body() body: PurchaseListDto) {
+    return this.purchasesService.createPurchase(body.products, req.user.userId);
   }
 
   @Get()
