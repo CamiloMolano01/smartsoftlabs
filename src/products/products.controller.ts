@@ -17,7 +17,9 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
@@ -26,18 +28,28 @@ export class ProductsController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({
+    summary: 'Create product',
+  })
+  @ApiBearerAuth('access-token')
   createProduct(@Body() body: CreateProductDto) {
     return this.productsService.createProduct(body);
   }
 
   @Public()
   @Get()
+  @ApiOperation({
+    summary: 'Get products',
+  })
   getProducts() {
     return this.productsService.getProducts();
   }
 
   @Public()
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get a product',
+  })
   getProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.getProduct(id);
   }
@@ -45,6 +57,10 @@ export class ProductsController {
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({
+    summary: 'Delete a product',
+  })
+  @ApiBearerAuth('access-token')
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
   }
@@ -52,6 +68,10 @@ export class ProductsController {
   @Patch(':id')
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
+  @ApiOperation({
+    summary: 'Update a product',
+  })
+  @ApiBearerAuth('access-token')
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
