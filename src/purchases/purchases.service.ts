@@ -55,6 +55,7 @@ export class PurchasesService {
     products: Product[],
     purchaseProducts: PurchaseProductDto[],
   ) {
+    const newProducts: Product[] = [];
     // Cuando ya esta confirmado proceso a quitar y guardar la cantidad comprada
     for (const purchaseProduct of purchaseProducts) {
       const productFound = products.find(
@@ -64,7 +65,11 @@ export class PurchasesService {
       productFound.quantity -= purchaseProduct.quantity;
       // Guardo la nueva cantidad del producto en la BD
       await this.productsService.saveProduct(productFound);
+      productFound.quantity = purchaseProduct.quantity;
+      this.productsService.createProduct(productFound);
+      newProducts.push(productFound);
     }
+    return newProducts;
   }
 
   async validatePurchase(
@@ -80,10 +85,13 @@ export class PurchasesService {
         throw new BadRequestException('Insufficient funds');
       }
       // En caso contrario proceso a quitar del stock de los productos la cantidad comprada
-      await this.removeBuyedQuantity(products, purchaseProducts);
+      const newProducts = await this.removeBuyedQuantity(
+        products,
+        purchaseProducts,
+      );
       // Creo la nueva compra y le doy sus propiedades
       const newPurchase = this.purchaseRepository.create();
-      newPurchase.products = products;
+      newPurchase.products = newProducts;
       newPurchase.total = total;
       // Agrego a la lista de compras del usuario
       user.purchases.push(newPurchase);
@@ -94,33 +102,11 @@ export class PurchasesService {
       // Guardo el usuario en la BD
       await this.usersService.saveUser(user);
       // retorno la compra sin la cantidad propia del producto
-      return this.getPurchaseWithoutQuantity(purchase.id);
+      return purchase;
     } catch (error) {
       // En caso de que el producto no exista lanzo una excepción
       throw new BadRequestException('Error to get products', error.message);
     }
-  }
-
-  getPurchaseWithoutQuantity(id: number) {
-    return this.purchaseRepository.findOne({
-      where: {
-        id,
-      },
-      select: {
-        id: true,
-        products: {
-          id: true,
-          name: true,
-          category: true,
-          price: true,
-        },
-        date: true,
-        total: true,
-      },
-      relations: {
-        products: true,
-      },
-    });
   }
 
   getPurchases() {
